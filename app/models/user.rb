@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   attr_accessor :remember_token
+  mount_uploader :image, ImageUploader
   before_save :downcase_email
 
   validates :name, presence: true, length: {maximum: 50}
@@ -23,7 +24,7 @@ class User < ApplicationRecord
   def forget
     update_attributes remember_digest: nil
   end
-  
+
   class << self
     def new_token
       SecureRandom.urlsafe_base64
@@ -35,7 +36,7 @@ class User < ApplicationRecord
         BCrypt::Password.create string, cost: cost
     end
   end
-  
+
   private
   def downcase_email
     email.downcase!
