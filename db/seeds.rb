@@ -1,8 +1,11 @@
+User.destroy_all
 User.create!  name: "TTTTTTTTTT",
               email: "222@gmail.com",
               password: "123456789",
               password_confirmation: "123456789",
-              admin: true
+              admin: true,
+              activated: true,
+              activated_at: Time.zone.now
 
 50.times do |n|
   name  = Faker::Name.name
@@ -13,5 +16,7 @@ User.create!  name: "TTTTTTTTTT",
                 email: email,
                 password: password,
                 password_confirmation: password, admin: false,
-                image: image
+                image: image,
+                activated: true,
+                activated_at: Time.zone.now
 end

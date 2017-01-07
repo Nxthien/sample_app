@@ -17,9 +17,8 @@ class UsersController < ApplicationController
   def create
     @user = User.new user_params
     if @user.save
-      flash[:success] = "Welcome to sample app"
-      log_in @user
-      redirect_to @user
+      @user.send_activation_email
+      render "user_mailer/account_activation"
     else
       render :new
     end
@@ -62,7 +61,7 @@ class UsersController < ApplicationController
   end
 
   def find_user
-    @user = User.find_by_id params[:id]
+    @user = User.find_by id: params[:id]
     unless @user
       flash[:danger] = "User not exist"
       redirect_to users_path
