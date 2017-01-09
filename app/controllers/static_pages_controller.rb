@@ -1,4 +1,6 @@
 class StaticPagesController < ApplicationController
+  before_action :load_feeds, only: [:home]
+
   def home
   end
 
@@ -10,5 +12,12 @@ class StaticPagesController < ApplicationController
 
   def contact
   end
-
+  private
+  def load_feeds
+    if logged_in?
+      @micropost = current_user.microposts.build
+      @feed_items = current_user.microposts.order(id: :desc)
+        .paginate page: params[:page], per_page: Settings.per_page
+    end
+  end
 end
