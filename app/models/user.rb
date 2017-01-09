@@ -4,6 +4,8 @@ class User < ApplicationRecord
   before_create :create_activation_digest
   before_save :downcase_email
 
+  has_many :microposts, dependent: :destroy
+
   validates :name, presence: true, length: {maximum: 50}
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, length: {maximum: 255},
@@ -28,6 +30,10 @@ class User < ApplicationRecord
     reset_sent_at < 2.hours.ago
   end
 
+  def current_user? current_user
+    self == current_user
+  end
+  
   def send_activation_email
     UserMailer.account_activation(self).deliver_now
   end
@@ -54,7 +60,7 @@ class User < ApplicationRecord
       SecureRandom.urlsafe_base64
     end
 
-    def digest string 
+    def digest string
       cost = ActiveModel::SecurePassword.min_cost ?
         BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
         BCrypt::Password.create string, cost: cost

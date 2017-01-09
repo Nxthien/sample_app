@@ -19,6 +19,8 @@ gem "faker"
 gem "will_paginate", "3.1.0"
 gem "bootstrap-will_paginate", "0.0.10"
 gem "carrierwave"
+gem "mini_magick"
+gem "fog"
 gem "config"
 
 group :development, :test do

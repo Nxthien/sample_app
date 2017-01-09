@@ -11,12 +11,16 @@ User.create!  name: "TTTTTTTTTT",
   name  = Faker::Name.name
   email = "example-#{n+1}@railstutorial.org"
   password = "password"
-  image = Faker::Avatar.image
   User.create!  name: name,
                 email: email,
                 password: password,
                 password_confirmation: password, admin: false,
-                image: image,
                 activated: true,
                 activated_at: Time.zone.now
+end
+users = User.order(:created_at).take 6
+
+50.times do
+  content = Faker::Lorem.sentence 5
+  users.each {|user| user.microposts.create! content: content}
 end
