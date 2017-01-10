@@ -7,11 +7,12 @@ module UsersHelper
     image_tag gravatar_url, alt: user.name, class: "gravatar"
   end
 
-  def avatar_for user
+  def avatar_for user, options = {size: 50}
+    size = options[:size]
     if user.image.present?
-      link_to image_tag(user.image, size: 50), user
+      link_to image_tag(user.image, size: size), user
     else
-      link_to gravatar_for(user, size: 50), user
+      link_to gravatar_for(user, size: size), user
     end
   end
 end

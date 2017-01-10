@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
-  before_action :logged_in_user, only: [:index, :edit, :update]
+  before_action :logged_in_user, except: [:new, :create]
   before_action :correct_user, only: [:edit, :update]
   before_action :find_user, except: [:new, :index, :create]
-  before_action :admin_user, only: [:destroy]
+  before_action :admin_user, only: :destroy
 
   def index
     @users = User.paginate page: params[:page], per_page: Settings.per_page
@@ -13,6 +13,7 @@ class UsersController < ApplicationController
   end
 
   def show
+    relationship @user
     @microposts = @user.microposts.paginate page: params[:page],
       per_page: Settings.per_page
   end
@@ -47,6 +48,18 @@ class UsersController < ApplicationController
   end
 
   private
+  def relationship user
+    @relationship = current_user.active_relationships.find_by followed_id: user.id
+  end
+  
+  def find_user
+    @user = User.find_by id: params[:id]
+    unless @user
+      flash[:danger] = "User not exist"
+      redirect_to users_path
+    end
+  end
+
   def user_params
     params.require(:user).permit :name, :email,
       :password, :password_confirmation, :image
@@ -59,13 +72,5 @@ class UsersController < ApplicationController
 
   def admin_user
     redirect_to root_url unless current_user.admin?
-  end
-
-  def find_user
-    @user = User.find_by id: params[:id]
-    unless @user
-      flash[:danger] = "User not exist"
-      redirect_to users_path
-    end
   end
 end
